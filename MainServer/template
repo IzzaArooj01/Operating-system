@@ -1,0 +1,79 @@
+I have designed a server which is accepting clients requests to upload file and dwosnload file server is accepting the client connection then after signing in with username and password and storing its credentials on databse.txt  make a client separte directory no other client can enter others   requests and uploading and downloading the file  i have implemneted all thse sfunctionalities $UPLOAD$<file_path>$
+First Client will send $UPLOAD$/home/hamza/Desktop/sample.txt$
+Server will check if the client has storage space available on the system. If space is available your server will send a response as $SUCCESS$ else server will return $FAILURE$LOW_SPACE$. Now assume that each client will be given a storage of 10 KB for now
+After the Client receives a $SUCCESS$ message from the server. The client will send the data of the file over the network
+After the server receives the data, it will store the data inside the file “sample.txt” it created. At the end if there is not issue, It will return a response of $SUCCESS$
+$VIEW$
+First Client will send $VIEW$
+Server will check if the client has files already existing. IF there are existing files for the client. The server will return the name of the files, their dates and size ELSE it will return $FAILURE$NO_CLIENT_DATA$.
+$DOWNLOAD$<file_name>$
+Client will send the name of the file to download as this “$DOWNLOAD$sample.txt$”. If the server does not have the file requested by the client. The server will return “$FAILURE$FILE_NOT_FOUND$”. If the file exists the server will start sending the data to the client.Multithreaded Server:
+The server should be multithreaded, with a separate thread created for each client connection. 
+Main thread should only create a connection.
+Any further communication as listed below should be done by individual thread assigned to each client:
+Upload
+Download
+View
+//i have implemneted all tshe functionalties now what i want is taht when same clients connected from two differnet devices but having same credentialsconnected to server they ill access same client directory now th rp peoblem is that these two clients cannot do upload operations concurrently no read write no write write no write read operations can be performed on same file of same directory how it should mange if same clients clients then it should synchronixed properly and if differnet clients it should work as it working First you have to give me idea to handle it then i wil give my idea 
+
+
+
+if i make a queue where client socket id ,clientt name,operation upload or download ,filename is stored if incoming clinets have same client names then place these both clinets in queue but i want if both clients ants to perform operation on same fil then it should be placed in queue if two clinets of same id 1 then two more clients od same id 2 then id 1 clients cant perform conflict operation on same file also id 2 clients cant perform conflict operation on just same file will they aslo be placed on same queue because hen processing queue if queue has id 1 of two clients then id2 of two clients id1 clients has same file a.txt and id2 clients has same file b.txt  but in this case id1 clinets are independent of id2 clients so id2 clients should not wait for id1 clients to complete its proess so give  me another idead to compete this strategy
+
+pseudo code
+// Structure for a queue node
+typedef struct QueueNode {
+    char client_name[50];
+    int socket_id;  // Socket ID for communication
+    char operation[10];  // "upload" or "download"
+    struct QueueNode* next;
+} QueueNode;
+typedef struct FileQueue {
+    QueueNode* front;
+    QueueNode* rear;
+    pthread_mutex_t lock;  // Lock for queue operations
+} FileQueue;
+
+typedef struct SharedFile {
+    char name[MAX_FILENAME_LENGTH];
+    FileQueue queue;  // Queue for operations on this file
+} SharedFile;
+typedef struct Client {
+    char id[20];             // Client ID (unique for each client)
+    char name[50];           // Client name
+    int is_connected;        // Connection status
+    SharedFile files[MAX_FILES];  // Array of files for this client
+    int file_count;          // Number of files for the client
+} Client;
+Client clients[MAX_CLIENTS];
+int client_count = 0; // Count of clients
+
+while(true)
+{
+    accept(client connections);
+    threadcreate(clienthandler,socket)
+}
+void clienthandler(voide * par){
+    signinhandle();
+    recvdcommand();
+    lock(specificfilequeue)
+    enqueonspecificfileQUEUE();
+    unlock(specificfilequeue);
+    lock(specificfilequeue);
+    if(specificfilequeue.size==1){
+        item=specificfilequeue.deque();
+        if(item.operation=="read"){
+            download(file);
+        }
+        if(item.operation=="write"){
+            upload(file);
+        }
+    }
+    else if(specificfilequeue.size>1){
+        signal(filehandler);
+        //want to send the specific file queue also to file handler thraeds but there is only one file handler thread how can i signal and send that specific quue to work and process on this
+
+    }
+
+
+}
